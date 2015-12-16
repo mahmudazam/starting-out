@@ -4,8 +4,8 @@ import java.io.*;
 public class FileManagerLaunch {
 	public static void main (String[] args) {
 		Scanner omi = new Scanner(System.in);
-		System.out.println("Input query and then search space: ");
-		FileManager a = new FileManager(omi.nextLine(), omi.nextLine());
+		System.out.println("Search space is: /Users/ \nInput query: ");
+		FileManager a = new FileManager(omi.nextLine());
 		
 		//Block to test nextFileStratum:
 		/*File file = new File(omi.nextLine());
@@ -15,7 +15,9 @@ public class FileManagerLaunch {
 		}*/
 
 		//Block to test breadthSearch:
+		System.out.println("Searching. Please wait...");
 		String[] hits = a.breadthSearch();
+		System.out.println("Paths to query file: ");
 		for(int i = 0; i < hits.length; i++) {
 			System.out.println(hits[i]);
 		}
@@ -34,7 +36,7 @@ class FileManager {
 
 	FileManager (String fileName) {
 		this.file = new File(fileName);
-		this.root = new File("/");
+		this.root = new File("/Users/");
 	}
 	
 	public File[] listDirectories(String dirName) {
