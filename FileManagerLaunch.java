@@ -1,16 +1,20 @@
 import java.util.*;
 import java.io.*;
-import java.nio.*;
+
 public class FileManagerLaunch {
 	public static void main (String[] args) {
 		Scanner omi = new Scanner(System.in);
 		System.out.println("Input query and then search space: ");
 		FileManager a = new FileManager(omi.nextLine(), omi.nextLine());
-		/*File[] stratum = a.nextFileStratum(a.listDirectories("/"));
-		//stratum = a.nextFileStratum(stratum);
+		
+		//Block to test nextFileStratum:
+		/*File file = new File(omi.nextLine());
+		File[] stratum = a.nextFileStratum(file.listFiles());
 		for (int i = 0; i < stratum.length; i++) {
 			System.out.println(stratum[i].getName());
 		}*/
+
+		//Block to test breadthSearch:
 		String[] hits = a.breadthSearch();
 		for(int i = 0; i < hits.length; i++) {
 			System.out.println(hits[i]);
@@ -61,18 +65,47 @@ class FileManager {
 		return fileStratum;
 	}
 
+	boolean isTerminalFileStratum(File[] fileStratum) {
+		boolean isTerminal = false;
+		for (int i = 0; i < fileStratum.length; i++) {
+			if (fileStratum[i].isDirectory()) {
+				isTerminal = false;
+				break;
+			} else {
+				isTerminal = true;
+			}
+		}
+		return isTerminal;
+	}
+
 	public String[] breadthSearch() {
 		File[] searchSpace = root.listFiles();
 		String query = file.getName();
 		Vector<String> hitPaths = new Vector<String>(0,1);
-		while (searchSpace.length != 0) {
+		boolean isTerminal = false, run = false;
+		do {
+			isTerminal = isTerminalFileStratum(searchSpace);
+			if (isTerminal) {
+				run = false;
+			} else {
+				run = true;
+			}
+
+			//Debug block:
+			/*System.out.println("----------------------------------");
+			for(int i =0; i < searchSpace.length; i++) {
+				System.out.println(searchSpace[i].getAbsolutePath());
+			}*/
+			
 			for(int i = 0; i < searchSpace.length; i++) {
 				if (query.equals(searchSpace[i].getName())) {
 					hitPaths.addElement(searchSpace[i].getAbsolutePath());
 				}
 			}
-			searchSpace = nextFileStratum(searchSpace);
-		}
+			if (run) {
+				searchSpace = nextFileStratum(searchSpace);
+			}
+		} while (run);
 		if (hitPaths.size() == 0){
 			hitPaths.addElement("File or directory not found");
 		}
@@ -97,3 +130,4 @@ class FileManager {
 		} 
 	}
 }
+
