@@ -9,9 +9,12 @@ public class FileManagerLaunch {
 		
 		//Block to test nextFileStratum:
 		/*File file = new File(omi.nextLine());
-		File[] stratum = a.nextFileStratum(file.listFiles());
+		File[] stratum = file.listFiles();
+		stratum = a.nextFileStratum(stratum);
+		stratum = a.nextFileStratum(stratum);
+		stratum = a.nextFileStratum(stratum);
 		for (int i = 0; i < stratum.length; i++) {
-			System.out.println(stratum[i].getName());
+			System.out.println(stratum[i].getAbsolutePath());
 		}*/
 
 		//Block to test breadthSearch:
@@ -36,7 +39,7 @@ class FileManager {
 
 	FileManager (String fileName) {
 		this.file = new File(fileName);
-		this.root = new File("/Users/");
+		this.root = new File("/Users/Shams/Downloads/DummyDirectory/");
 	}
 	
 	public File[] listDirectories(String dirName) {
@@ -62,8 +65,12 @@ class FileManager {
 				} catch (NullPointerException problem ) {
 					continue;
 				}
-				for(int j = 0; j < list.length; j++ ) {
-					fileVector.addElement(list[j]);
+				try {	
+					for(int j = 0; j < list.length; j++ ) {
+						fileVector.addElement(list[j]);
+					}
+				} catch(NullPointerException problem) {
+					continue;
 				}
 			}
 		}
@@ -74,11 +81,15 @@ class FileManager {
 	boolean isTerminalFileStratum(File[] fileStratum) {
 		boolean isTerminal = false;
 		for (int i = 0; i < fileStratum.length; i++) {
-			if (fileStratum[i].isDirectory()) {
-				isTerminal = false;
-				break;
-			} else {
-				isTerminal = true;
+			try {
+				if (fileStratum[i].isDirectory()) {
+					isTerminal = false;
+					break;
+				} else {
+					isTerminal = true;
+				}
+			} catch (NullPointerException problem) {
+				continue;
 			}
 		}
 		return isTerminal;
