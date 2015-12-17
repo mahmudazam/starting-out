@@ -57,7 +57,11 @@ class FileManager {
 		Vector<File> fileVector = new Vector<File>(0,1);
 		for(int i = 0; i < fileStratum.length; i++) {
 			if (fileStratum[i].isDirectory()) {
-				list = fileStratum[i].listFiles();
+				try {
+					list = fileStratum[i].listFiles();
+				} catch (NullPointerException problem ) {
+					continue;
+				}
 				for(int j = 0; j < list.length; j++ ) {
 					fileVector.addElement(list[j]);
 				}
@@ -84,14 +88,9 @@ class FileManager {
 		File[] searchSpace = root.listFiles();
 		String query = file.getName();
 		Vector<String> hitPaths = new Vector<String>(0,1);
-		boolean isTerminal = false, run = false;
+		boolean run = false;
 		do {
-			isTerminal = isTerminalFileStratum(searchSpace);
-			if (isTerminal) {
-				run = false;
-			} else {
-				run = true;
-			}
+			run = !(isTerminalFileStratum(searchSpace));
 
 			//Debug block:
 			/*System.out.println("----------------------------------");
