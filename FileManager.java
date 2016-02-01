@@ -1,45 +1,18 @@
 import java.util.*;
 import java.io.*;
-
-public class FileManagerLaunch {
-	public static void main (String[] args) {
-		Scanner omi = new Scanner(System.in);
-		System.out.println("Search space is: /Users/ \nInput query: ");
-		FileManager a = new FileManager(omi.nextLine());
-		
-		//Block to test nextFileStratum:
-		/*File file = new File(omi.nextLine());
-		File[] stratum = file.listFiles();
-		stratum = a.nextFileStratum(stratum);
-		stratum = a.nextFileStratum(stratum);
-		stratum = a.nextFileStratum(stratum);
-		for (int i = 0; i < stratum.length; i++) {
-			System.out.println(stratum[i].getAbsolutePath());
-		}*/
-
-		//Block to test breadthSearch:
-		System.out.println("Searching. Please wait...");
-		String[] hits = a.breadthSearch();
-		System.out.println("Paths to query file: ");
-		for(int i = 0; i < hits.length; i++) {
-			System.out.println(hits[i]);
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------------------
+import java.net.*;
 
 class FileManager {
 	public File file, root;
-	
 	FileManager (String fileName, String dirName) {
 		this.file = new File(fileName);
 		this.root = new File(dirName);
 	}
-
 	FileManager (String fileName) {
 		this.file = new File(fileName);
-		this.root = new File("/Users/Shams/Downloads/DummyDirectory/");
+	}
+	FileManager() {
+		;
 	}
 	
 	public File[] listDirectories(String dirName) {
@@ -54,7 +27,6 @@ class FileManager {
 		File[] directories = dirVector.toArray(new File[dirVector.size()]);
 		return directories;
 	}
-	
 	public File[] nextFileStratum(File[] fileStratum) {
 		File[] list;
 		Vector<File> fileVector = new Vector<File>(0,1);
@@ -77,7 +49,6 @@ class FileManager {
 		fileStratum = fileVector.toArray(new File[fileVector.size()]);
 		return fileStratum;
 	}
-
 	boolean isTerminalFileStratum(File[] fileStratum) {
 		boolean isTerminal = false;
 		for (int i = 0; i < fileStratum.length; i++) {
@@ -94,7 +65,6 @@ class FileManager {
 		}
 		return isTerminal;
 	}
-
 	public String[] breadthSearch() {
 		File[] searchSpace = root.listFiles();
 		String query = file.getName();
@@ -123,23 +93,62 @@ class FileManager {
 		}
 		return hitPaths.toArray(new String[hitPaths.size()]);
 	}
-	
 	public void copyFile (String input, String output) {
 		try {
-		FileInputStream in = new FileInputStream(input);
-		FileOutputStream out = new FileOutputStream(output);
-		int data = in.read();
-		while (data!= -1) {
-			out.write(data);
-			System.out.print((char) data);
-			data = in.read();
-		}
-		System.out.println();
-		in.close();
-		out.close();
+			FileInputStream in = new FileInputStream(input);
+			FileOutputStream out = new FileOutputStream(output);
+			int data = in.read();
+			while (data!= -1) {
+				out.write(data);
+				System.out.print((char) data);
+				data = in.read();
+			}
+			System.out.println();
+			in.close();
+			out.close();
 		} catch (IOException e) {
 			System.out.println("File Not Found.");
 		} 
+	}
+	public static void sendFile(OutputStream out, String fileName) {
+		try {
+			File file = new File(fileName);
+			String path = file.getAbsolutePath();
+			String name = file.getName();
+			FileInputStream in = new FileInputStream(path);
+			out.write((name + "|").getBytes());
+			int buffer = in.read();
+			while (buffer != -1) {
+				out.write(buffer);
+				buffer = in.read();
+			}
+		} catch(FileNotFoundException e) {
+			System.out.println("sendFile: File not found.");
+			return;
+		} catch(Exception e) {
+			System.out.println("sendFile: File sending failed.");
+			return;
+		}
+	}
+	public static String receiveFile(InputStream in, String destination) {
+		try { 
+			String name = "";
+			int buffer = in.read();
+			while (buffer != (int)'|') {
+				name += (char) buffer;
+				buffer = in.read();
+			}
+			FileOutputStream out = new FileOutputStream(destination + name);
+			buffer = in.read();
+			while(buffer != -1) {
+				out.write(buffer);
+				buffer = in.read();
+			}
+			return (destination + name);
+		} catch(Exception e) {
+			System.out.println("receiveFile: File reception failed.");
+			return null;
+		}	
 	}
 }
 

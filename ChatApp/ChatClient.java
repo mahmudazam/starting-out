@@ -4,9 +4,11 @@ import java.net.*;
 
 public class ChatClient {
 	public static void main(String[] args) {
-		Connection connection = new Connection();
+		Scanner omi = new Scanner(System.in);
+		System.out.println("Enter IP and port of server: ");
+		Connection connection = new Connection(omi.nextLine(), omi.nextInt());
 		SignalClass signal = new SignalClass();
-		System.out.println("Chat App starts: \n\nInstructions: \n\nInput '$' and press enter to enter message or exit command. \nAfter typing message press enter to send. \nTo exit type exit and press enter. \n\n*********************************************************************\n");
+		System.out.println("Chat App starts: \n\nInstructions: \n\nInput '$' and press enter; then type  message or exit command and press enter to send message or exit the program. \nTo exit type exit and press enter. \n\n*********************************************************************\n");
 		try {
 			(new SendThread(connection.sendSocket.getOutputStream(), signal)).start();
 		} catch(IOException e) {
@@ -24,8 +26,8 @@ class Connection {
 	Socket sendSocket, receiveSocket;
 	Connection() {
 		try {
-			sendSocket = new Socket("172.16.1.84", 60000);
-			receiveSocket = new Socket("172.16.1.84", 60000);	
+			sendSocket = new Socket("70.76.82.94", 60000);
+			receiveSocket = new Socket("70.76.82.94", 60000);	
 		} catch(Exception e) {
 			System.out.println("Error in Connection.");
 		}

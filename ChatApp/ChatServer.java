@@ -4,8 +4,10 @@ import java.net.*;
 
 public class ChatServer {
 	public static void main(String[] args) {
+		System.out.println("Server Starts!");
 		try {
 			ServerSocket server = new ServerSocket(60000);
+			System.out.println("Listening on port 60000.");
 			Client client1 = new Client(server);
 			Client client2 = new Client(server);
 			serveClients(client1, client2);
